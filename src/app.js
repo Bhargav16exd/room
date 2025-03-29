@@ -10,7 +10,7 @@ import cookieParser from "cookie-parser"
 dotenv.config()
 
 // Server Init
-const app = express()
+const initServer = express()
 
 // App Middlewars
 app.use(cors({
@@ -25,9 +25,39 @@ app.use(express.json({
     limit:'50mb'
 }))
 
+// Sockets 
+const app = createServer(initServer);
+const io = new Server(app, {
+    cors:{
+        origin:process.env.ORIGIN_URL,
+        credentials:true
+    }
+});
 
 
+io.on("connection", (socket) => {
+  // ...
+});
+
+
+// Error Handler
+app.use((err,req,res,next)=>{
+
+    const statusCode = err.statusCode || 500;
+    const message = err.message ;
+    const errors = err.errors || [];
+
+    res.status(statusCode).json({
+        success:false,
+        message,
+        errors ,
+        data:null
+    })
+    
+})
 
 
 export default app
-
+export {
+    io
+}
