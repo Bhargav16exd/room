@@ -1,4 +1,5 @@
-class ErrorResponse extends Error {
+export default class ErrorResponse extends Error {
+    
     constructor(
         statusCode, message= "something went wrong" , errors=[],stack=""
     ){

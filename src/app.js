@@ -7,6 +7,9 @@ import { createServer } from "http";
 import {Server} from "socket.io"
 
 
+// Routes Import
+import userRouter from "./routes/user.router.js"
+
 // Configured DotEnv 
 dotenv.config()
 
@@ -36,9 +39,12 @@ initServer.use(express.json({
     limit:'50mb'
 }))
 
-io.on("connection", (socket) => {
-  // ...
-});
+// Routing
+initServer.use('/api/v1/user',userRouter)
+
+// io.on("connection", (socket) => {
+//   // ...
+// });
 
 
 // Error Handler
