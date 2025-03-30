@@ -9,6 +9,8 @@ import {Server} from "socket.io"
 
 // Routes Import
 import userRouter from "./routes/user.router.js"
+import spaceRouter from "./routes/space.router.js"
+import ListenToSocket from "./socket/socketHandling.js";
 
 // Configured DotEnv 
 dotenv.config()
@@ -41,10 +43,11 @@ initServer.use(express.json({
 
 // Routing
 initServer.use('/api/v1/user',userRouter)
+initServer.use('/api/v1/space',spaceRouter)
 
-// io.on("connection", (socket) => {
-//   // ...
-// });
+
+//Listen to Socket
+ListenToSocket();
 
 
 // Error Handler
