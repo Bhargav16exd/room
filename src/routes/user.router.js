@@ -11,7 +11,7 @@ const router = Router()
   Title   : Auth Routes
   Working : anything that comes on someroute ('/...') will be handled by the function in front of it , imported from controllers 
 */
-router.route('/registerUser').post(registerUser)
+router.route('/signup').post(registerUser)
 router.route('/login').post(loginUser)
 
 // Authenticated Routes

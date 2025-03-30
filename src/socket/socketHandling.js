@@ -53,7 +53,6 @@ export default async function ListenToSocket(){
         const {role}  = socket.handshake.query
 
 
-
         // Get Space Detials associated with space data provided by user
         const spaceDetailsFetchedFromDatabase = await Space.findOne({
             name:space
@@ -69,8 +68,6 @@ export default async function ListenToSocket(){
         else{
             socket.join(space)
         }
-
-         
 
         /*
           Working : It Allows only person who created room to emit message to the room 
