@@ -47,3 +47,30 @@ export const createSpace = async (req,res,next) =>{
         next(error)
     }
 }
+
+
+/*
+    Title   : Space Controller
+    Working : Fetches all the spaces created by the user
+*/
+
+export const getAllSpaces = async (req,res,next) =>{
+    try {
+
+        const spaces = await Space.find({
+            createdBy:req.user._id
+        })
+
+        if(!spaces || spaces.length === 0){
+            throw new ErrorResponse(404,"No Spaces Found")
+        }
+
+        return res.json(
+            new SuccessResponse(200,"Spaces Fetched Successfully",spaces)
+        )
+
+        
+    } catch (error) {
+        next(error)
+    }
+}

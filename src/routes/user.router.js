@@ -15,7 +15,7 @@ router.route('/signup').post(registerUser)
 router.route('/login').post(loginUser)
 
 // Authenticated Routes
-router.route('/logout').post(authenticationMiddleware,logout)
+router.route('/logout').get(authenticationMiddleware,logout)
 
 
 // Exports

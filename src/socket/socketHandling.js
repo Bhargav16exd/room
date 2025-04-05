@@ -1,3 +1,4 @@
+import { json } from "stream/consumers";
 import { io } from "../app.js";
 import { Space } from "../models/space.model.js";
 import { User } from "../models/user.model.js";
@@ -73,17 +74,31 @@ export default async function ListenToSocket(){
           Working : It Allows only person who created room to emit message to the room 
         */
         
-        if(spaceDetailsFetchedFromDatabase.createdBy.equals(socket.user._id) && socket.user._id != "Guest" ){
+        socket.on("chat",(msg)=>{
+            const {content} = msg
+            socket.to(space).emit("chat",parseContent(content))
+        })
 
-            socket.on("chat",(msg)=>{
-                socket.to(space).emit("chat",msg)
-            })
+        // if(spaceDetailsFetchedFromDatabase.createdBy.equals(socket.user._id) && socket.user._id != "Guest" ){
 
-        }
+            
+
+        // }
        
 
     })
 
+}
+
+export const parseContent = (content) => {
+    const parsedContent = content.map((item) => {
+        return {
+            id: item.id,
+            data: item.data,
+        };
+    });
+
+    return parsedContent;
 }
 
 const logger = ({role,socketId}) =>{
