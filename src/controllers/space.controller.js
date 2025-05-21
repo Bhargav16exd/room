@@ -2,6 +2,7 @@
 import ErrorResponse from "../utils/error.response.js"
 import { Space } from "../models/space.model.js"
 import SuccessResponse from "../utils/success.response.js"
+import { User } from "../models/user.model.js"
 
 
 
@@ -73,4 +74,41 @@ export const getAllSpaces = async (req,res,next) =>{
     } catch (error) {
         next(error)
     }
+}
+
+export const spaceExists = async(req,res,next) => {
+
+    try {
+
+        const {spacename,username} = req.params
+        
+        if(!spacename || !username){
+            throw new ErrorResponse(400,'Invalid Inputs')
+        }
+
+        const user = await User.findOne({username})
+
+        if(!user){
+            throw new ErrorResponse(400,"No Such Space Exist")
+        }
+
+        console.log(user)
+
+        const space = await Space.find({
+            name:spacename,
+            createdBy:user._id
+        })
+
+        console.log(space)
+
+        if(!space){
+            return res.json({"exist":false})
+        }
+        
+        return res.json({"exist":true})
+        
+    } catch (error) {
+        next(error)
+    }
+
 }
