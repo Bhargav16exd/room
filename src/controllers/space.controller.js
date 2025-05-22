@@ -90,8 +90,6 @@ export const spaceExists = async(req,res,next) => {
             name:`${username}/${spacename}`,
         })
 
-        console.log(space)
-
         if(!space){
             return res.json({"exist":false})
         }

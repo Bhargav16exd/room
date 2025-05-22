@@ -18,6 +18,7 @@ export default async function ListenToSocket(){
     io.use(async(socket,next)=>{
 
         try {
+
             const token = socket.handshake.auth.token 
 
     
@@ -68,6 +69,12 @@ export default async function ListenToSocket(){
         }
         else{
             socket.join(space)
+
+            //Count Number of People
+            const count = io.sockets.adapter.rooms.get(space).size
+
+            socket.to(space).emit("user-joined",count)
+
         }
 
         /*
@@ -78,13 +85,17 @@ export default async function ListenToSocket(){
             const {content} = msg
             socket.to(space).emit("chat",parseContent(content))
         })
-
-        // if(spaceDetailsFetchedFromDatabase.createdBy.equals(socket.user._id) && socket.user._id != "Guest" ){
-
-            
-
-        // }
        
+
+       //When Socket disconnects
+        socket.on("disconnect", () => {
+            const count = io.sockets?.adapter.rooms.get(space)?.size
+            if(count){
+                socket.to(space).emit("user-joined",count)
+            }
+            
+        });
+
 
     })
 
