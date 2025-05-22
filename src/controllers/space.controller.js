@@ -86,17 +86,8 @@ export const spaceExists = async(req,res,next) => {
             throw new ErrorResponse(400,'Invalid Inputs')
         }
 
-        const user = await User.findOne({username})
-
-        if(!user){
-            throw new ErrorResponse(400,"No Such Space Exist")
-        }
-
-        console.log(user)
-
-        const space = await Space.find({
-            name:spacename,
-            createdBy:user._id
+        const space = await Space.findOne({
+            name:`${username}/${spacename}`,
         })
 
         console.log(space)
