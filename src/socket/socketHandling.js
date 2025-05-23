@@ -3,8 +3,29 @@ import { io } from "../app.js";
 import { Space } from "../models/space.model.js";
 import { User } from "../models/user.model.js";
 import jwt from "jsonwebtoken"
+import ErrorResponse from "../utils/error.response.js";
+import SuccessResponse from "../utils/success.response.js";
 
 
+const spaceData = {}
+
+export const latest = async (req,res,next) => {
+
+    try {
+        
+        const {space} = req.body
+
+        if(!space){
+            throw new ErrorResponse(400,"Invalid Space Name")
+        }
+
+        return res.json(new SuccessResponse(200,"Fetched Latest Data",spaceData[space]))
+
+
+    } catch (error) {
+        next(error)
+    }
+}
 
 export default async function ListenToSocket(){
 
@@ -68,12 +89,34 @@ export default async function ListenToSocket(){
             socket.emit("err","no-space-found")
         }
         else{
+
             socket.join(space)
+
+            /* 
+                Working : Whenever a space is created create a key of that object
+            */
+            if(spaceData[space]){
+                spaceData[space] = spaceData[space]
+            }
+            else{
+                spaceData[space] = {content:'',count:''}
+            }
+            
+
 
             //Count Number of People
             const count = io.sockets.adapter.rooms.get(space).size
-
+            
             socket.to(space).emit("user-joined",count)
+
+
+            /*
+                Working : Send Content and count on First hand when user joins
+            */
+           spaceData[space].count = count
+
+
+
 
         }
 
@@ -82,14 +125,24 @@ export default async function ListenToSocket(){
         */
         
         socket.on("chat",(msg)=>{
+
             const {content} = msg
             socket.to(space).emit("chat",parseContent(content))
+
+            /* 
+               Working : Store Data In RAM
+               NOTE : optimizaiton required
+            */
+            spaceData[space].content = parseContent(content)
+
         })
        
 
        //When Socket disconnects
         socket.on("disconnect", () => {
+
             const count = io.sockets?.adapter.rooms.get(space)?.size
+            
             if(count){
                 socket.to(space).emit("user-joined",count)
             }
