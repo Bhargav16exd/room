@@ -1,4 +1,5 @@
 import mongoose , {Schema} from "mongoose";
+import { type } from "os";
 
 /*
   Title   : Defining Database Schema
@@ -15,6 +16,15 @@ const spaceSchema = new Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"User",
         required:true
+    },
+    content:[],
+    selfDestruction:{
+        type:Boolean,
+        default:true,
+    },
+    selfDestructTime:{
+        type:String,
+        enum:['1hr','6hr','12hr','24hr']
     }
 },
 {

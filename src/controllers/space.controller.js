@@ -13,7 +13,7 @@ import { User } from "../models/user.model.js"
 export const createSpace = async (req,res,next) =>{
     try {
 
-        const {name} = req.body
+        const {name,selfDestructTime} = req.body
 
         if(!name){
             throw new ErrorResponse(400,"Incomplete Inputs")
@@ -30,7 +30,8 @@ export const createSpace = async (req,res,next) =>{
         
         const space = await Space.create({
             name:`${req.user.username}/${name}`,
-            createdBy:req.user._id
+            createdBy:req.user._id,
+            selfDestructTime
         })
 
         if(!space){
@@ -76,6 +77,12 @@ export const getAllSpaces = async (req,res,next) =>{
     }
 }
 
+
+/*
+    Title   : Space Controller
+    Working : Check if a space exist
+*/
+
 export const spaceExists = async(req,res,next) => {
 
     try {
@@ -95,6 +102,68 @@ export const spaceExists = async(req,res,next) => {
         }
         
         return res.json({"exist":true})
+        
+    } catch (error) {
+        next(error)
+    }
+
+}
+
+
+/*
+    Title   : Space Controller
+    Working : Archive Space : Turns Self Destruction to false
+*/
+
+export const archive = async(req,res,next) => {
+
+    try {
+
+        const {spacename,username} = req.params
+        
+        if(!spacename || !username){
+            throw new ErrorResponse(400,'Invalid Inputs')
+        }
+
+        const space = await Space.findOneAndUpdate({
+            name:`${username}/${spacename}`,
+        },{
+            selfDestruction:false
+        })
+
+        if(!space){
+            throw new ErrorResponse(400,'No Such Space Exists')
+        }
+        
+        return res.json(new SuccessResponse(200,"Archived Successfully"))
+        
+    } catch (error) {
+        next(error)
+    }
+
+}
+
+/*
+    Title   : Space Controller
+    Working : Delets Space
+*/
+
+
+export const deleteSpace = async(req,res,next) => {
+
+    try {
+
+        const {spacename,username} = req.params
+        
+        if(!spacename || !username){
+            throw new ErrorResponse(400,'Invalid Inputs')
+        }
+
+        await Space.findOneAndDelete({
+            name:`${username}/${spacename}`,
+        })
+
+        return res.json(new SuccessResponse(200,"Space Deleted Successfully"))
         
     } catch (error) {
         next(error)

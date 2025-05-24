@@ -11,6 +11,7 @@ import {Server} from "socket.io"
 import userRouter from "./routes/user.router.js"
 import spaceRouter from "./routes/space.router.js"
 import ListenToSocket from "./socket/socketHandling.js";
+import cleanDB from "./service/cleanup.js";
 
 // Configured DotEnv 
 dotenv.config()
@@ -49,6 +50,10 @@ initServer.use('/api/v1/space',spaceRouter)
 //Listen to Socket
 ListenToSocket();
 
+//Clear Database
+setInterval(async()=>{
+    await cleanDB()
+},1000 * 60 * 60 )
 
 // Error Handler
 initServer.use((err,req,res,next)=>{

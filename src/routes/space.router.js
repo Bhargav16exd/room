@@ -2,7 +2,7 @@ import {Router} from "express"
 
 // Router Functions Handling 
 import { authenticationMiddleware } from "../middlewares/authentication.middleware.js"
-import { createSpace, getAllSpaces, spaceExists } from "../controllers/space.controller.js"
+import { archive, createSpace, deleteSpace, getAllSpaces, spaceExists } from "../controllers/space.controller.js"
 import { latest } from "../socket/socketHandling.js"
 
 
@@ -15,6 +15,8 @@ const router = Router()
 */
 router.route('/createSpace').post(authenticationMiddleware,createSpace)
 router.route('/getAllSpaces').get(authenticationMiddleware,getAllSpaces)
+router.route('/archive').post(authenticationMiddleware,archive)
+router.route('/delete').delete(authenticationMiddleware,deleteSpace)
 
 router.route('/exists/:username/:spacename').get(spaceExists)
 router.route('/latest').post(latest)
