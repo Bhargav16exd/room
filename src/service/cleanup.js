@@ -1,4 +1,5 @@
 import { Space } from "../models/space.model.js"
+import {time} from "../contants.js"
 
 
 export default async function cleanDB() {
@@ -11,14 +12,13 @@ export default async function cleanDB() {
             return 
         }
 
-        spaces.map((space)=>{
+        //Self Destruct
+        spaces.map(async (space)=>{
             
             const now = new Date()
 
-            if( now > space.createdAt){
-                console.log("ABHI banaya ")
-            }else{
-                console.log("PEHELE BANAYA")
+            if( time[space.selfDestructTime] < now - space.createdAt){
+                await Space.findOneAndDelete({name:space.name})
             }
 
         })

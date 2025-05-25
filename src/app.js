@@ -50,10 +50,13 @@ initServer.use('/api/v1/space',spaceRouter)
 //Listen to Socket
 ListenToSocket();
 
-//Clear Database
+
+/*
+    Working : After every 1 hr this function is executed and deletes all expired spaces
+*/
 setInterval(async()=>{
     await cleanDB()
-},1000 * 60 * 60 )
+},1000 * 60 * 60)
 
 // Error Handler
 initServer.use((err,req,res,next)=>{

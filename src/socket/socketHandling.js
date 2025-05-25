@@ -101,22 +101,16 @@ export default async function ListenToSocket(){
             else{
                 spaceData[space] = {content:'',count:''}
             }
-            
-
 
             //Count Number of People
             const count = io.sockets.adapter.rooms.get(space).size
-            
-            socket.to(space).emit("user-joined",count)
-
 
             /*
                 Working : Send Content and count on First hand when user joins
             */
            spaceData[space].count = count
 
-
-
+            socket.to(space).emit("user-joined",count)
 
         }
 
@@ -127,6 +121,7 @@ export default async function ListenToSocket(){
         socket.on("chat",(msg)=>{
 
             const {content} = msg
+            
             socket.to(space).emit("chat",parseContent(content))
 
             /* 
