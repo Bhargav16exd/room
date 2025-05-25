@@ -128,7 +128,12 @@ export default async function ListenToSocket(){
                Working : Store Data In RAM
                NOTE : optimizaiton required
             */
-            spaceData[space].content = parseContent(content)
+
+            if(parseContent(content)[0]?.data){
+                spaceData[space].content = parseContent(content)
+            }
+
+            
 
         })
        
