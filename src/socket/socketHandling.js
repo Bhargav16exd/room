@@ -7,7 +7,7 @@ import ErrorResponse from "../utils/error.response.js";
 import SuccessResponse from "../utils/success.response.js";
 
 
-const spaceData = {}
+export const spaceData = {} 
 
 export const latest = async (req,res,next) => {
 
@@ -19,8 +19,25 @@ export const latest = async (req,res,next) => {
             throw new ErrorResponse(400,"Invalid Space Name")
         }
 
-        return res.json(new SuccessResponse(200,"Fetched Latest Data",spaceData[space]))
+        if( !spaceData[space] ||spaceData[space].content){
+            return res.json(new SuccessResponse(200,"Fetched Latest Data",spaceData[space]))
+        }
 
+        //Procceed further only for spaces which are archived
+
+        const uniqueSpace = await Space.findOne({name:space , selfDestruction:false})
+
+        if(!uniqueSpace){
+            return res.json( new  SuccessResponse(400, "No Such Space Exist"))
+        }
+
+        const responseBoilerPlate = {
+            content : uniqueSpace.content,
+            count : ""
+        }
+
+
+        return res.json(new SuccessResponse(200,"Fetched Latest Data",responseBoilerPlate))
 
     } catch (error) {
         next(error)

@@ -3,6 +3,7 @@ import ErrorResponse from "../utils/error.response.js"
 import { Space } from "../models/space.model.js"
 import SuccessResponse from "../utils/success.response.js"
 import { User } from "../models/user.model.js"
+import { spaceData } from "../socket/socketHandling.js"
 
 
 
@@ -119,16 +120,26 @@ export const archive = async(req,res,next) => {
 
     try {
 
-        const {spacename,username} = req.params
+        const {spacename} = req.body
+        const {username} = req.user
         
-        if(!spacename || !username){
+        if(!spacename){
             throw new ErrorResponse(400,'Invalid Inputs')
         }
+
+        const localSpaceData = spaceData[`${username}/${spacename}`]
+
+        if(!localSpaceData.content){
+            throw new ErrorResponse(400,'Empty Space Data Cannot be saved')
+        }
+
+        const {content} = localSpaceData
 
         const space = await Space.findOneAndUpdate({
             name:`${username}/${spacename}`,
         },{
-            selfDestruction:false
+            selfDestruction:false,
+            content
         })
 
         if(!space){
@@ -145,7 +156,7 @@ export const archive = async(req,res,next) => {
 
 /*
     Title   : Space Controller
-    Working : Delets Space
+    Working : Delete Space
 */
 
 
