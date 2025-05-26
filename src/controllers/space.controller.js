@@ -67,7 +67,7 @@ export const getRecent = async (req,res,next) =>{
         })
 
         if(!spaces || spaces.length === 0){
-            throw new ErrorResponse(404,"No Spaces Found")
+            return res.json(new SuccessResponse(204,"No Recent Found"))
         }
 
         return res.json(
@@ -95,7 +95,7 @@ export const getArchive = async (req,res,next) =>{
         })
 
         if(!spaces || spaces.length === 0){
-            throw new ErrorResponse(404,"No Spaces Found")
+            return res.json(new SuccessResponse(204,"No Archive Found"))
         }
 
         return res.json(
@@ -195,14 +195,14 @@ export const deleteSpace = async(req,res,next) => {
 
     try {
 
-        const {spacename,username} = req.params
-        
-        if(!spacename || !username){
+        const {name} = req.body
+
+        if(!name){
             throw new ErrorResponse(400,'Invalid Inputs')
         }
 
         await Space.findOneAndDelete({
-            name:`${username}/${spacename}`,
+            name
         })
 
         return res.json(new SuccessResponse(200,"Space Deleted Successfully"))

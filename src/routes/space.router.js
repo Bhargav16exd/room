@@ -19,7 +19,7 @@ router.route('/archive').get(authenticationMiddleware,getArchive)
 
 
 router.route('/archive').post(authenticationMiddleware,archive)
-router.route('/delete').delete(authenticationMiddleware,deleteSpace)
+router.route('/delete').post(authenticationMiddleware,deleteSpace)
 
 router.route('/exists/:username/:spacename').get(spaceExists)
 router.route('/latest').post(latest)
